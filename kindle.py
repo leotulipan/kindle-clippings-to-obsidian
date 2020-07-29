@@ -69,6 +69,7 @@ def export_txt(clips, n_clips):
     """
     for book in clips:
         lines = []
+        sorted_hl = {}
         for pos in sorted(clips[book]):
             # lines.append(clips[book][pos].encode('utf-8'))
             text = clips[book][pos]
@@ -79,8 +80,11 @@ def export_txt(clips, n_clips):
                     if int(loc) >= int(range_split[0]) and int(loc) <= int(range_split[1]):
                         text = text + "\n\nNOTE: " + n_clips[book][loc]
 
+            sorted_hl[int(range_split[0])] = text
             lines.append(text.encode('utf-8'))
-
+        lines = []
+        for position in sorted(sorted_hl):
+            lines.append(sorted_hl[position].encode('utf-8'))
         filename = os.path.join(OUTPUT_DIR, u"%s.md" % book)
         with open(filename, 'wb') as f:
             f.write("\n\n---\n\n".join(lines))
