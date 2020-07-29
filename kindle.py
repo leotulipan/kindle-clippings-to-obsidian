@@ -63,14 +63,23 @@ def get_note_clip(section):
     return clip
 
 
-def export_txt(clips):
+def export_txt(clips, n_clips):
     """
     Export each book's clips to single text.
     """
     for book in clips:
         lines = []
         for pos in sorted(clips[book]):
-            lines.append(clips[book][pos].encode('utf-8'))
+            # lines.append(clips[book][pos].encode('utf-8'))
+            text = clips[book][pos]
+            loc_range = pos
+            range_split = loc_range.split("-")
+            if book in n_clips:
+                for loc in n_clips[book]:
+                    if int(loc) >= int(range_split[0]) and int(loc) <= int(range_split[1]):
+                        text = text + "\n\nNOTE: " + n_clips[book][loc]
+
+            lines.append(text.encode('utf-8'))
 
         filename = os.path.join(OUTPUT_DIR, u"%s.md" % book)
         with open(filename, 'wb') as f:
@@ -140,7 +149,7 @@ def main():
     save_highlight_clips(clips)
     save_note_clips(n_clips)
     
-    export_txt(clips)
+    export_txt(clips, n_clips)
 
 
 if __name__ == '__main__':
