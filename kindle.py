@@ -125,6 +125,34 @@ def save_note_clips(clips):
     with open(NOTE_FILE, 'wb') as f:
         json.dump(clips, f)
 
+def save_title_clips(clips):
+    """
+    Save new clips to NOTE_FILE
+    """
+    with open(ARTICLE_FILE, 'wb') as f:
+        json.dump(clips, f)
+
+def find_titles(clips, n_clips):
+    title_ind = []
+    title_dic = {}
+    for book in n_clips:
+        match = re.search('Instapaper: ', book)
+        if match:
+            for loc in n_clips[book]:
+                if n_clips[book][loc] == ".Title.":
+                    title_ind.append(loc)
+                    if book in title_dic:
+                        null = 0;
+                    else:
+                        title_dic[book] = {}
+                    for pos in clips[book]:
+                        loc_range = pos
+                        split_range = loc_range.split("-")
+                        if int(loc) >= int(split_range[0]) and int(loc) <= int(split_range[1]):
+                            title = clips[book][pos]
+                            title_dic[book][int(split_range[0])] = title
+    return title_dic
+
 
 def main():
     # for highlights
@@ -134,6 +162,8 @@ def main():
 
     n_clips = collections.defaultdict(dict)
     n_clips.update(load_note_clips())
+
+
     # extract clips
     sections = get_sections(u'My Clippings.txt')
     for section in sections:
@@ -152,6 +182,9 @@ def main():
     # save/export clips
     save_highlight_clips(clips)
     save_note_clips(n_clips)
+
+
+    save_title_clips(find_titles(clips, n_clips))
     
     export_txt(clips, n_clips)
 
