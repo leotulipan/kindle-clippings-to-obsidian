@@ -110,6 +110,16 @@ def load_note_clips():
     except (IOError, ValueError):
         return {}
 
+def load_title_clips():
+    """
+    Load previous clips from NOTE_FILE
+    """
+    try:
+        with open(ARTICLE_FILE, 'rb') as f:
+            return json.load(f)
+    except (IOError, ValueError):
+        return {}
+
 
 def save_highlight_clips(clips):
     """
@@ -132,9 +142,9 @@ def save_title_clips(clips):
     with open(ARTICLE_FILE, 'wb') as f:
         json.dump(clips, f)
 
-def find_titles(clips, n_clips):
+def find_titles(clips, n_clips, title_dic):
     title_ind = []
-    title_dic = {}
+    # title_dic = {}
     for book in n_clips:
         match = re.search('Instapaper: ', book)
         if match:
@@ -142,7 +152,7 @@ def find_titles(clips, n_clips):
                 if n_clips[book][loc] == ".Title.":
                     title_ind.append(loc)
                     if book in title_dic:
-                        null = 0;
+                        null = 0
                     else:
                         title_dic[book] = {}
                     for pos in clips[book]:
@@ -150,7 +160,8 @@ def find_titles(clips, n_clips):
                         split_range = loc_range.split("-")
                         if int(loc) >= int(split_range[0]) and int(loc) <= int(split_range[1]):
                             title = clips[book][pos]
-                            title_dic[book][int(split_range[0])] = title
+                            title_dic[book][str(split_range[0])] = title
+    print(title_dic)
     return title_dic
 
 
@@ -163,6 +174,8 @@ def main():
     n_clips = collections.defaultdict(dict)
     n_clips.update(load_note_clips())
 
+    title_clips = collections.defaultdict(dict)
+    title_clips.update(load_title_clips())    
 
     # extract clips
     sections = get_sections(u'My Clippings.txt')
@@ -184,7 +197,7 @@ def main():
     save_note_clips(n_clips)
 
 
-    save_title_clips(find_titles(clips, n_clips))
+    save_title_clips(find_titles(clips, n_clips, title_clips))
     
     export_txt(clips, n_clips)
 
