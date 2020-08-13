@@ -161,7 +161,6 @@ def find_titles(clips, n_clips, title_dic):
                         if int(loc) >= int(split_range[0]) and int(loc) <= int(split_range[1]):
                             title = clips[book][pos]
                             title_dic[book][str(split_range[0])] = title
-    print(title_dic)
     return title_dic
 
 
