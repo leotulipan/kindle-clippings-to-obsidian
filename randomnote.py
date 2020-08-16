@@ -79,7 +79,7 @@ def main():
         if rand_book in title_clips:
             title_loc = sorted(title_clips[rand_book])
 
-            for x in range(len(title_loc)-1):
+            for x in range(len(title_loc)-2):
                 if int(hl_range[0]) >= int(title_loc[x]) and int(hl_range[0]) <= int(title_loc[x+1]):
                     title = title_clips[rand_book][str(title_loc[x])]
             if int(hl_range[0]) >= int(title_loc[len(title_loc)-1]):
