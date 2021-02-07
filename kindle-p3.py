@@ -104,12 +104,47 @@ def LoadNoteClips():
     except (IOError, ValueError):
         return {}
 
+def LoadArticleTitles():
+    """
+    Load previous clips from NOTE_FILE
+    """
+    try:
+        with open(ARTICLE_FILE, 'rb') as f:
+            return json.load(f)
+    except (IOError, ValueError):
+        return {}
+
+def FindArticleTitles(highlightClips, noteClips, articleTitles):
+    titleLocations = []
+    # title_dic = {}
+    for book in noteClips:
+        
+        if book.find("Instapaper: ") != -1:
+            for location in noteClips[book]:
+                if noteClips[book][location] == ".Title.":
+                    titleLocations.append(location)
+                    if book in articleTitles:
+                        null = 0
+                    else:
+                        articleTitles[book] = {}
+                    for position in highlightClips[book]:
+                        locationRange = position
+                        splitRange = locationRange.split("-")
+                        if int(location) >= int(splitRange[0]) and int(location) <= int(splitRange[1]):
+                            title = highlightClips[book][position]
+                            articleTitles[book][locationRange] = title
+
+    return articleTitles
+
 def main():
     highlightClips = collections.defaultdict(dict)
     highlightClips.update(LoadHighlightClips())
-    
+
     noteClips = collections.defaultdict(dict)
     noteClips.update(LoadNoteClips())
+
+    articleTitles = collections.defaultdict(dict)
+    articleTitles.update(LoadArticleTitles())
     
     clippings = SplitClippings('My Clippings test.txt')
 
@@ -129,6 +164,9 @@ def main():
 
     SaveHighlightClips(highlightClips)
     SaveNoteClips(noteClips)
+
+    articleTitles = FindArticleTitles(highlightClips, noteClips, articleTitles)
+    print(articleTitles)
 
 
 main()
