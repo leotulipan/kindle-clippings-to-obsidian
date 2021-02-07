@@ -84,6 +84,13 @@ def SaveNoteClips(noteClips):
     f = open(NOTE_FILE, "w")
     json.dump(noteClips, f)
 
+def SaveArticleTitles(articleTitles):
+    """
+    Save new clips to NOTE_FILE
+    """
+    f = open(ARTICLE_FILE, "w")
+    json.dump(articleTitles, f)
+
 def LoadHighlightClips():
     """
     Load previous clips from HIGHLIGHT_FILE
@@ -166,7 +173,7 @@ def main():
     SaveNoteClips(noteClips)
 
     articleTitles = FindArticleTitles(highlightClips, noteClips, articleTitles)
-    print(articleTitles)
+    SaveArticleTitles(articleTitles)
 
 
 main()
