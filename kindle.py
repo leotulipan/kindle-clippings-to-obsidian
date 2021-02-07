@@ -13,6 +13,7 @@ HIGHLIGHT_FILE = u"highlights.json"
 NOTE_FILE = u"notes.json"
 ARTICLE_FILE = u"articles.json"
 
+
 def get_sections(filename):
     with open(filename, 'rb') as f:
         content = f.read().decode('utf-8')
@@ -24,14 +25,19 @@ def get_highlight_clip(section):
     clip = {}
 
     lines = [l for l in section.split(u'\r\n') if l]
+    
+    # all sections with highlights or notes are 4 lines long
     if len(lines) != 3:
         return
 
+    
+
     clip['book'] = lines[0]
-    match = re.search(r'(\d+)-\d+', lines[1])
+    match = re.search(r'(\d+)-\d+', lines[1]) # searching for a range of numbers
     if not match:
         return
-    # position = match.group(1)
+    
+    # get the range of location
     position = match.group(0)
 
     # clip['position'] = int(position)

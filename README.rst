@@ -1,7 +1,8 @@
-Kindle Clippings
+Kindle Clippings To Obsidian
 ================
 
-A simple python script to extract clippings from 'My Clippings.txt', organize, store and output them in a more elegant way.
+A script to extract highlights and notes from kindle clippings and add them to a separate markdown file for each book/article.
+Tailored for use with Obsidian.
 
 Features
 --------
