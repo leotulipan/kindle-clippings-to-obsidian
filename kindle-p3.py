@@ -143,6 +143,37 @@ def FindArticleTitles(highlightClips, noteClips, articleTitles):
 
     return articleTitles
 
+def ExportBookClippings(highlightClips, noteClips):
+    """
+    Export each book's clips to single text.
+    """
+    for book in highlightClips:
+        if book.find("Instapaper: ") == -1:
+            lines = []
+            sortedHighlights = {}
+            for pos in highlightClips[book]:
+                # lines.append(clips[book][pos].encode('utf-8'))
+                text = highlightClips[book][pos]
+                locationRange = pos
+                text = text + " (" + locationRange + ")"
+                rangeSplit = locationRange.split("-")
+                if book in noteClips:
+                    for loc in noteClips[book]:
+                        if int(loc) >= int(rangeSplit[0]) and int(loc) <= int(rangeSplit[1]):
+                            text = text + "\n\nNOTE: " + noteClips[book][loc] + " (" + loc + ")"
+
+                sortedHighlights[int(rangeSplit[0])] = text
+            lines = []
+            for position in sorted(sortedHighlights):
+                lines.append(sortedHighlights[position])
+            filename = os.path.join(OUTPUT_DIR, "%s.md" % book)
+            fname = book + ".md"
+            f = open(filename,"w")
+            f.write("\n\n---\n\n".join(lines))
+
+def SeparateArticleClippings(highlightClips, noteClips, articleTitles):
+    # 
+
 def main():
     highlightClips = collections.defaultdict(dict)
     highlightClips.update(LoadHighlightClips())
@@ -174,6 +205,10 @@ def main():
 
     articleTitles = FindArticleTitles(highlightClips, noteClips, articleTitles)
     SaveArticleTitles(articleTitles)
+
+    ExportBookClippings(highlightClips, noteClips)
+    SeparateArticleClippings(highlightClip, noteClips, articleTitles)
+
 
 
 main()
