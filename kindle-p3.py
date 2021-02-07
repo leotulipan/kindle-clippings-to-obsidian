@@ -70,9 +70,47 @@ def GetNoteClip(clipping):
 
     return noteClip
 
+def SaveHighlightClips(highlightClips):
+    """
+    Save new highlights to HIGHLIGHT_FILE
+    """
+    f = open(HIGHLIGHT_FILE, "w")
+    json.dump(highlightClips, f)
+
+def SaveNoteClips(noteClips):
+    """
+    Save new clips to NOTE_FILE
+    """
+    f = open(NOTE_FILE, "w")
+    json.dump(noteClips, f)
+
+def LoadHighlightClips():
+    """
+    Load previous clips from HIGHLIGHT_FILE
+    """
+    try:
+        with open(HIGHLIGHT_FILE, 'rb') as f:
+            return json.load(f)
+    except (IOError, ValueError):
+        return {}
+
+def LoadNoteClips():
+    """
+    Load previous clips from NOTE_FILE
+    """
+    try:
+        with open(NOTE_FILE, 'rb') as f:
+            return json.load(f)
+    except (IOError, ValueError):
+        return {}
+
 def main():
     highlightClips = collections.defaultdict(dict)
+    highlightClips.update(LoadHighlightClips())
+    
     noteClips = collections.defaultdict(dict)
+    noteClips.update(LoadNoteClips())
+    
     clippings = SplitClippings('My Clippings test.txt')
 
     for clipping in clippings:
@@ -85,7 +123,12 @@ def main():
         if noteClip:
             noteClips[noteClip['book']][(noteClip['position'])] = noteClip['content']
 
-    print(highlightClips)
-    print(noteClips)
+    # remove key with empty value
+    highlightClips = {k: v for k, v in highlightClips.items() if v}
+    noteClips = {x: y for x, y in noteClips.items() if y}
+
+    SaveHighlightClips(highlightClips)
+    SaveNoteClips(noteClips)
+
 
 main()
