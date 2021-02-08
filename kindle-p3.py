@@ -163,7 +163,7 @@ def ExportBookClippings(highlightClips, noteClips):
                             text = text + "\n\nNOTE: " + noteClips[book][loc] + " (" + loc + ")"
 
                 sortedHighlights[int(rangeSplit[0])] = text
-            lines = ["#book"]
+            lines = ["#book\n- [ ] completed"]
             for position in sorted(sortedHighlights):
                 lines.append(sortedHighlights[position])
             filename = os.path.join(OUTPUT_DIR, "%s.md" % book)
@@ -191,13 +191,36 @@ def ExportArticleClippings(highlightClips, noteClips):
 
             sortedHighlights[int(rangeSplit[0])] = text
         
-        lines = ["#article\nsource: "]
+
+        # get article title and remove source?
+        splitTitle = book.split(" ")
+        source = splitTitle[-1]
+        splitTitle.pop()
+        title = " ".join(splitTitle)
+        metadata = "#artcle\n" + source + "\n"
+
+        # find the source article set
+        sourceArticle = SourceArticle(book)
+        if sourceArticle:
+            metadata = metadata + sourceArticle + "\n- [ ] completed"
+
+        lines = [metadata]
         for position in sorted(sortedHighlights):
             lines.append(sortedHighlights[position])
-        filename = os.path.join(OUTPUT_DIR, "%s.md" % book)
+        filename = os.path.join(OUTPUT_DIR, "%s.md" % title)
         fname = book + ".md"
         f = open(filename,"w")
         f.write("\n\n---\n\n".join(lines))
+
+def SourceArticle(articleTitle):
+    articleTitles = collections.defaultdict(dict)
+    articleTitles.update(LoadArticleTitles())
+
+    for book in articleTitles:
+        for titleRange in articleTitles[book]:
+            if articleTitles[book][titleRange] == articleTitle:
+                return book
+        
 
 def SeparateArticleHighlights(highlightClips, noteClips, articleTitles, _articleHighlightClips):
     # create a dictionary of articles
