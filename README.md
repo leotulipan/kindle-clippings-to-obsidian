@@ -1,5 +1,5 @@
-Kindle Clippings To Obsidian
-================
+# Kindle Clippings To Obsidian
+---
 
 A script to extract highlights and notes from kindle clippings and add them to a separate markdown file for each book/article.
 Tailored for use with Obsidian.
