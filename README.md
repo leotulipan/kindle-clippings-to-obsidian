@@ -4,6 +4,8 @@
 A script to extract highlights and notes from kindle clippings (`My Clippings.txt`) and add them to a separate markdown file for each book/article.
 Tailored for use with [Obsidian](https://obsidian.md/) (note-taking app).
 
+There is also a script that picks a book and clipping at random to display in the command line, although it needs to be updated.
+
 ## Instapaper Integration
 [Instapaper](https://www.instapaper.com/) is a Read-It-Later app. I like to save articles that I would like to read to Instapaper, which can then automatically send a digest of articles to my kindle (I have it send a digest everyday as long as there is 1 new article since the last digest). The issue with this is that there is no distinction between articles in a digest. This program splits up the articles from each Instapaper digest and each article gets a markdown file with all highlights and notes.
 
@@ -26,12 +28,12 @@ Clone project and put `My Clippings.txt` to project's root. I keep the project f
 Run `kindle-to-markdown.py`
 
 ```
-$ python kindle.py
+$ python kindle-to-markdown.py
 ```
 ### Instapaper Users
-To get separate markdown files per article, highlight the title of an article and at the note `.Title.`. 
+To get separate markdown files per article, highlight the title of an article and add the note `.Title.`. 
 ![title highlight example](https://github.com/WFinck97/kindle-clippings-to-obsidian/blob/master/images/title_highlight_example.JPG)
-Make sure to also highlight the source web link, as this gets removed and added to the header of the markdown file.
+Make sure to also highlight the source web link, as this gets removed from the title and added to the header of the markdown file.
 
 ## Demo
 
@@ -44,19 +46,39 @@ $ tree .
 ├── README.md
 ├── kindle-to-obsidian.py
 └── output
-    ├── Book Title (Paul Graham).md
-    ├── Article Title.md
+    ├── B-Book Title.md
+    ├── A-Article Title.md
 ```
 
-Example output file contet:
+Example output file content (as you can see some notes are duplicated - it's not perfect but gets the job done!):
 
-    Nerds aren't losers. They're just playing a different game, and a game much closer to the one played in the real world. Adults know this. It's hard to find successful adults now who don't claim to have been nerds in high school.
+```markdown
+#artcle
+noemamag.com
+Instapaper: Saturday, Feb. 6th (Instapaper)
+- [ ] completed
 
-    ---
+---
 
-    What hackers and painters have in common is that they're both makers. Along with composers, architects, and writers, what hackers and painters are trying to do is make good things. They're not doing research per se, though if in the course of trying to make good things they discover some new technique, so much the better.
+The Frontiers Of Digital Democracy - NOEMA noemamag.com (27-28)
 
-    ---
+NOTE: .Title. (28)
 
-    This is not a problem for big companies, because they don't win by making great products. Big companies win by sucking less than other big companies.
+---
 
+I simply say that participation by citizens in such a process should be “fast, fun and fair.” Also, participation only works if there is a real effect on power. Most of the time, people agree on most of the issues around which they can reach a “rough consensus” as the basis for formulating policies that constitute and reflect the social norm. Polarization occurs on very few issues. (37-40)
+
+NOTE: I likee the idea of participation in deliberation shouldd be fast easy and fun, and howw its only usrful if it shifts power (40)
+
+---
+
+should be “fast, fun and fair.” Also, participation only works if there is a real effect (38-38)
+
+---
+
+As a result of our practices of online deliberation, Taiwan’s president, Tsai Ing-wen, has said: “Before, democracy was a showdown between two opposing values. Now, democracy is a conversation between many diverse values.” (40-42)
+
+NOTE: I likee the idea of participation in deliberation shouldd be fast easy and fun, and howw its only usrful if it shifts power (40)
+
+NOTE: Great quote of how online partcipatory deliberation changes the dynamics of conversations around values (42)
+```
