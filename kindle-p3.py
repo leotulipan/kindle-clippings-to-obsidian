@@ -148,7 +148,7 @@ def ExportBookClippings(highlightClips, noteClips):
     Export each book's clips to single text.
     """
     for book in highlightClips:
-        if book.find("Instapaper: ") == -1:
+        if book.find("Instapaper: ") == -1 and book.find("wes_man_wes") == -1:
             lines = []
             sortedHighlights = {}
             for pos in highlightClips[book]:
@@ -164,9 +164,10 @@ def ExportBookClippings(highlightClips, noteClips):
 
                 sortedHighlights[int(rangeSplit[0])] = text
             lines = ["#book\n- [ ] completed"]
+            title = "B-" + book
             for position in sorted(sortedHighlights):
                 lines.append(sortedHighlights[position])
-            filename = os.path.join(OUTPUT_DIR, "%s.md" % book)
+            filename = os.path.join(OUTPUT_DIR, "%s.md" % title)
             fname = book + ".md"
             f = open(filename,"w")
             f.write("\n\n---\n\n".join(lines))
@@ -197,6 +198,7 @@ def ExportArticleClippings(highlightClips, noteClips):
         source = splitTitle[-1]
         splitTitle.pop()
         title = " ".join(splitTitle)
+        title = "A-" + title
         metadata = "#artcle\n" + source + "\n"
 
         # find the source article set
@@ -289,7 +291,7 @@ def main():
     articleHighlightClips = collections.defaultdict(dict)
     articleNoteClips = collections.defaultdict(dict)
     
-    clippings = SplitClippings('My Clippings test.txt')
+    clippings = SplitClippings('My Clippings.txt')
 
     for clipping in clippings:
         highlightClip = GetHighlightClip(clipping)
