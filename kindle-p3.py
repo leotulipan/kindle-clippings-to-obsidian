@@ -171,8 +171,59 @@ def ExportBookClippings(highlightClips, noteClips):
             f = open(filename,"w")
             f.write("\n\n---\n\n".join(lines))
 
-def SeparateArticleClippings(highlightClips, noteClips, articleTitles):
-    # 
+def SeparateArticleHighlights(highlightClips, noteClips, articleTitles, _articleHighlightClips):
+    # create a dictionary of articles
+    # return that dictionary
+    articleHighlightClips = collections.defaultdict(dict)
+    articleHighlightClips.update(_articleHighlightClips)
+    # for each book name in articles.json, do stuff, nothing else matters
+
+    for book in articleTitles:
+        titleLocations = []
+        for titleLocationRange in articleTitles[book]:
+            titleLocations.append(titleLocationRange)
+
+        titleLocations = sorted(titleLocations)
+        for highlightLocationRange in highlightClips[book]:
+            # check location of highlight against the title locations
+            found = 0
+            for i in range(len(titleLocations)-1):
+                # this is where the comparison is happening
+                if int(highlightLocationRange.split("-")[1]) >= int(titleLocations[i].split("-")[0]) and int(highlightLocationRange.split("-")[1]) < int(titleLocations[i+1].split("-")[0]):
+                    articleTitle = articleTitles[book][titleLocations[i]]
+                    articleHighlightClips[articleTitle][highlightLocationRange] = highlightClips[book][highlightLocationRange]
+                    found = 1
+            if found == 0:
+                articleTitle = articleTitles[book][titleLocations[len(titleLocations)-1]]
+                articleHighlightClips[articleTitle][highlightLocationRange] = highlightClips[book][highlightLocationRange]
+    return articleHighlightClips
+            
+def SeparateArticleNotes(highlightClips, noteClips, articleTitles, _articleNoteClips):
+    # create a dictionary of articles
+    # return that dictionary
+    articleNoteClips = collections.defaultdict(dict)
+    articleNoteClips.update(_articleNoteClips)
+    # for each book name in articles.json, do stuff, nothing else matters
+
+    for book in articleTitles:
+        titleLocations = []
+        for titleLocationRange in articleTitles[book]:
+            titleLocations.append(titleLocationRange)
+
+        titleLocations = sorted(titleLocations)
+        for noteLocationRange in noteClips[book]:
+            # check location of highlight against the title locations
+            found = 0
+            for i in range(len(titleLocations)-1):
+                # this is where the comparison is happening
+                if int(noteLocationRange) >= int(titleLocations[i].split("-")[0]) and int(noteLocationRange) < int(titleLocations[i+1].split("-")[0]):
+                    articleTitle = articleTitles[book][titleLocations[i]]
+                    articleNoteClips[articleTitle][noteLocationRange] = noteClips[book][noteLocationRange]
+                    found = 1
+            if found == 0:
+                articleTitle = articleTitles[book][titleLocations[len(titleLocations)-1]]
+                articleNoteClips[articleTitle][noteLocationRange] = noteClips[book][noteLocationRange]
+    return articleNoteClips
 
 def main():
     highlightClips = collections.defaultdict(dict)
@@ -183,6 +234,9 @@ def main():
 
     articleTitles = collections.defaultdict(dict)
     articleTitles.update(LoadArticleTitles())
+
+    articleHighlightClips = collections.defaultdict(dict)
+    articleNoteClips = collections.defaultdict(dict)
     
     clippings = SplitClippings('My Clippings test.txt')
 
@@ -207,8 +261,9 @@ def main():
     SaveArticleTitles(articleTitles)
 
     ExportBookClippings(highlightClips, noteClips)
-    SeparateArticleClippings(highlightClip, noteClips, articleTitles)
-
+    
+    articleHighlightClips = SeparateArticleHighlights(highlightClips, noteClips, articleTitles, articleHighlightClips)
+    articleNoteClips = SeparateArticleNotes(highlightClips, noteClips, articleTitles, articleNoteClips)
 
 
 main()
