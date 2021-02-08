@@ -163,13 +163,41 @@ def ExportBookClippings(highlightClips, noteClips):
                             text = text + "\n\nNOTE: " + noteClips[book][loc] + " (" + loc + ")"
 
                 sortedHighlights[int(rangeSplit[0])] = text
-            lines = []
+            lines = ["#book"]
             for position in sorted(sortedHighlights):
                 lines.append(sortedHighlights[position])
             filename = os.path.join(OUTPUT_DIR, "%s.md" % book)
             fname = book + ".md"
             f = open(filename,"w")
             f.write("\n\n---\n\n".join(lines))
+
+def ExportArticleClippings(highlightClips, noteClips):
+    """
+    Export each book's clips to single text.
+    """
+    for book in highlightClips:
+        lines = []
+        sortedHighlights = {}
+        for pos in highlightClips[book]:
+            # lines.append(clips[book][pos].encode('utf-8'))
+            text = highlightClips[book][pos]
+            locationRange = pos
+            text = text + " (" + locationRange + ")"
+            rangeSplit = locationRange.split("-")
+            if book in noteClips:
+                for loc in noteClips[book]:
+                    if int(loc) >= int(rangeSplit[0]) and int(loc) <= int(rangeSplit[1]):
+                        text = text + "\n\nNOTE: " + noteClips[book][loc] + " (" + loc + ")"
+
+            sortedHighlights[int(rangeSplit[0])] = text
+        
+        lines = ["#article\nsource: "]
+        for position in sorted(sortedHighlights):
+            lines.append(sortedHighlights[position])
+        filename = os.path.join(OUTPUT_DIR, "%s.md" % book)
+        fname = book + ".md"
+        f = open(filename,"w")
+        f.write("\n\n---\n\n".join(lines))
 
 def SeparateArticleHighlights(highlightClips, noteClips, articleTitles, _articleHighlightClips):
     # create a dictionary of articles
@@ -265,5 +293,6 @@ def main():
     articleHighlightClips = SeparateArticleHighlights(highlightClips, noteClips, articleTitles, articleHighlightClips)
     articleNoteClips = SeparateArticleNotes(highlightClips, noteClips, articleTitles, articleNoteClips)
 
+    ExportArticleClippings(articleHighlightClips, articleNoteClips)
 
 main()
