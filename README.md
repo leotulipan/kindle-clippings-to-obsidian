@@ -30,7 +30,7 @@ $ python kindle.py
 ```
 ### Instapaper Users
 To get separate markdown files per article, highlight the title of an article and at the note `.Title.`. 
-![]()
+![title highlight example](https://github.com/WFinck97/kindle-clippings-to-obsidian/blob/master/images/title_highlight_example.JPG)
 Make sure to also highlight the source web link, as this gets removed and added to the header of the markdown file.
 
 ## Demo
