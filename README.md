@@ -47,7 +47,7 @@ $ tree .
 ├── kindle-to-obsidian.py
 └── output
     ├── B-Book Title.md
-    ├── A-Article Title.md
+    ├── A-The Frontiers Of Digital Democracy - NOEMA.md
 ```
 
 Example output file content (as you can see some notes are duplicated - it's not perfect but gets the job done!):
