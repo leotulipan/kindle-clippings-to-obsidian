@@ -6,6 +6,7 @@ import os
 
 BOUNDARY = "\n==========\n"
 OUTPUT_DIR = "output"
+OUTPUT_DIR_TEST = "output_test"
 HIGHLIGHT_FILE = "highlights.json"
 NOTE_FILE = "notes.json"
 ARTICLE_FILE = "articles.json"
@@ -148,7 +149,7 @@ def ExportBookClippings(highlightClips, noteClips):
     Export each book's clips to single text.
     """
     for book in highlightClips:
-        if book.find("Instapaper: ") == -1 and book.find("wes_man_wes") == -1:
+        if book.find("wes_man_wes") == -1:
             lines = []
             sortedHighlights = {}
             for pos in highlightClips[book]:
@@ -163,11 +164,11 @@ def ExportBookClippings(highlightClips, noteClips):
                             text = text + "\n\nNOTE: " + noteClips[book][loc] + " (" + loc + ")"
 
                 sortedHighlights[int(rangeSplit[0])] = text
-            lines = ["#book\n- [ ] completed"]
-            title = "B-" + book
+            # lines = ["#book\n- [ ] completed"]
+            title = book
             for position in sorted(sortedHighlights):
                 lines.append(sortedHighlights[position])
-            filename = os.path.join(OUTPUT_DIR, "%s.md" % title)
+            filename = os.path.join(OUTPUT_DIR_TEST, "%s.md" % title)
             fname = book + ".md"
             f = open(filename,"w")
             f.write("\n\n---\n\n".join(lines))
@@ -211,9 +212,8 @@ def ExportArticleClippings(highlightClips, noteClips):
             lines.append(sortedHighlights[position])
         filename = os.path.join(OUTPUT_DIR, "%s.md" % title)
         fname = book + ".md"
-        if fname.find("It seems we always insist on doing things that are more complicated and wasteful than necessary. There is an old Yiddish saying about scratching your right ear with your left hand") == -1:
-            f = open(filename,"w")
-            f.write("\n\n---\n\n".join(lines))
+        f = open(filename,"w")
+        f.write("\n\n---\n\n".join(lines))
 
 def SourceArticle(articleTitle):
     articleTitles = collections.defaultdict(dict)
@@ -286,11 +286,11 @@ def main():
     noteClips = collections.defaultdict(dict)
     noteClips.update(LoadNoteClips())
 
-    articleTitles = collections.defaultdict(dict)
-    articleTitles.update(LoadArticleTitles())
+    # articleTitles = collections.defaultdict(dict)
+    # articleTitles.update(LoadArticleTitles())
 
-    articleHighlightClips = collections.defaultdict(dict)
-    articleNoteClips = collections.defaultdict(dict)
+    # articleHighlightClips = collections.defaultdict(dict)
+    # articleNoteClips = collections.defaultdict(dict)
     
     clippings = SplitClippings('My Clippings.txt')
 
@@ -311,14 +311,14 @@ def main():
     SaveHighlightClips(highlightClips)
     SaveNoteClips(noteClips)
 
-    articleTitles = FindArticleTitles(highlightClips, noteClips, articleTitles)
-    SaveArticleTitles(articleTitles)
+    # articleTitles = FindArticleTitles(highlightClips, noteClips, articleTitles)
+    # SaveArticleTitles(articleTitles)
 
     ExportBookClippings(highlightClips, noteClips)
     
-    articleHighlightClips = SeparateArticleHighlights(highlightClips, noteClips, articleTitles, articleHighlightClips)
-    articleNoteClips = SeparateArticleNotes(highlightClips, noteClips, articleTitles, articleNoteClips)
+    # articleHighlightClips = SeparateArticleHighlights(highlightClips, noteClips, articleTitles, articleHighlightClips)
+    # articleNoteClips = SeparateArticleNotes(highlightClips, noteClips, articleTitles, articleNoteClips)
 
-    ExportArticleClippings(articleHighlightClips, articleNoteClips)
+    # ExportArticleClippings(articleHighlightClips, articleNoteClips)
 
 main()

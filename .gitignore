@@ -2,3 +2,4 @@
 *.txt
 *.json
 .DS_Store
+.obsidian/
